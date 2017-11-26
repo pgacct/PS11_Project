@@ -19,6 +19,12 @@ public class Ship extends Participant implements AsteroidDestroyer
     /** Game controller */
     private Controller controller;
 
+    /**Stores the direction the ship should turn*/
+    private turnDirection dir;
+    
+    /**Stores if the ship should accelerate*/
+    private boolean shipAccel;
+
     /**
      * Constructs a ship at the specified coordinates that is pointed in the given direction.
      */
@@ -36,9 +42,8 @@ public class Ship extends Participant implements AsteroidDestroyer
         poly.lineTo(-21, -12);
         poly.closePath();
         outline = poly;
-
-        // Schedule an acceleration in two seconds
-        new ParticipantCountdownTimer(this, "move", 2000);
+        
+        dir = turnDirection.NONE;
     }
 
     /**
@@ -73,8 +78,26 @@ public class Ship extends Participant implements AsteroidDestroyer
     @Override
     public void move ()
     {
+        if (dir == turnDirection.RIGHT)
+        {
+            turnRight();
+        }
+        if (dir == turnDirection.LEFT)
+        {
+            turnLeft();
+        }
+        if (shipAccel)
+        {
+            accelerate();
+        }
         applyFriction(SHIP_FRICTION);
-        super.move();
+        super.move();        
+    }
+    
+    /**Checks if the right key button is pressed*/
+    public void setTurnDirection (turnDirection turn)
+    {
+        dir = turn;
     }
 
     /**
@@ -93,6 +116,12 @@ public class Ship extends Participant implements AsteroidDestroyer
         rotate(-Math.PI / 16);
     }
 
+    /**Checks if the accelerate (Up or W Key) is being pressed.*/
+    public void setAcceleration (boolean setAcc)
+    {
+        shipAccel = setAcc;
+    }
+    
     /**
      * Accelerates by SHIP_ACCELERATION
      */

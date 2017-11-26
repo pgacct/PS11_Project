@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.util.Iterator;
 import javax.swing.*;
 import asteroids.participants.Asteroid;
+import asteroids.participants.Bullet;
 import asteroids.participants.Ship;
 
 /**
@@ -105,10 +106,24 @@ public class Controller implements KeyListener, ActionListener
     private void placeAsteroids ()
     {
         addParticipant(new Asteroid(0, 2, EDGE_OFFSET, EDGE_OFFSET, 3, this));
+        addParticipant(new Asteroid(1, 2, -EDGE_OFFSET, EDGE_OFFSET, 3, this));
+        addParticipant(new Asteroid(2, 2, EDGE_OFFSET, -EDGE_OFFSET, 3, this));
+        addParticipant(new Asteroid(3, 2, -EDGE_OFFSET, -EDGE_OFFSET, 3, this));
     }
 
     /**
-     * Clears the screen so that nothing is displayed
+     * Places bullets on the screen.
+     */
+    private void placeBullets ()
+    {
+        if (pstate.countBullets() <= Constants.BULLET_LIMIT)
+        {
+        addParticipant(new Bullet(ship.getXNose(), ship.getYNose(), ship.getRotation(), this));
+        }
+    }
+
+    /**
+     * Clears the screen so that nothing is displayed   
      */
     private void clear ()
     {
@@ -125,7 +140,7 @@ public class Controller implements KeyListener, ActionListener
         // Clear the screen
         clear();
 
-        // Plac asteroids
+        // Place asteroids
         placeAsteroids();
 
         // Place the ship
@@ -249,9 +264,28 @@ public class Controller implements KeyListener, ActionListener
     @Override
     public void keyPressed (KeyEvent e)
     {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT && ship != null)
+        if (ship != null)
         {
-            ship.turnRight();
+            switch (e.getKeyCode())
+            {
+                case KeyEvent.VK_RIGHT:
+                case KeyEvent.VK_D:
+                    ship.setTurnDirection(turnDirection.RIGHT);
+                    break;
+                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_A:
+                    ship.setTurnDirection(turnDirection.LEFT);
+                    break;
+                case KeyEvent.VK_UP:
+                case KeyEvent.VK_W:
+                    ship.setAcceleration(true);
+                    break;
+                case KeyEvent.VK_DOWN:
+                case KeyEvent.VK_S:
+                case KeyEvent.VK_SPACE:
+                    placeBullets();
+                    break;
+            }
         }
     }
 
@@ -269,5 +303,21 @@ public class Controller implements KeyListener, ActionListener
     @Override
     public void keyReleased (KeyEvent e)
     {
+        if (ship != null)
+        {
+            switch (e.getKeyCode())
+            {
+                case KeyEvent.VK_RIGHT:
+                case KeyEvent.VK_D:
+                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_A:
+                    ship.setTurnDirection(turnDirection.NONE);
+                    break;
+                case KeyEvent.VK_UP:
+                case KeyEvent.VK_W:
+                    ship.setAcceleration(false);
+                    break;
+            }
+        }
     }
 }

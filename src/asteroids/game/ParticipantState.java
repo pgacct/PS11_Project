@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 import asteroids.participants.Asteroid;
+import asteroids.participants.Bullet;
 
 /**
  * Keeps track of the Participants, their motions, and their collisions.
@@ -72,6 +73,29 @@ public class ParticipantState
         for (Participant p : pendingAdds)
         {
             if (p instanceof Asteroid && !p.isExpired())
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * Returns the number of bullets that are active participants
+     */
+    public int countBullets ()
+    {
+        int count = 0;
+        for (Participant p : participants)
+        {
+            if (p instanceof Bullet && !p.isExpired())
+            {
+                count++;
+            }
+        }
+        for (Participant p : pendingAdds)
+        {
+            if (p instanceof Bullet && !p.isExpired())
             {
                 count++;
             }
