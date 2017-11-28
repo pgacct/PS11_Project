@@ -3,9 +3,9 @@ package asteroids.participants;
 import static asteroids.game.Constants.*;
 import java.awt.Shape;
 import java.awt.geom.*;
-import java.util.Random;
 import asteroids.destroyers.AsteroidDestroyer;
 import asteroids.destroyers.ShipDestroyer;
+import asteroids.game.Constants;
 import asteroids.game.Controller;
 import asteroids.game.Participant;
 
@@ -143,7 +143,7 @@ public class Asteroid extends Participant implements ShipDestroyer
     @Override
     public void collidedWith (Participant p)
     {
-        Random rand = new Random();
+        
         if (p instanceof AsteroidDestroyer)
         {
             // Expire the asteroid
@@ -152,14 +152,19 @@ public class Asteroid extends Participant implements ShipDestroyer
                 case 0: 
                     break;
                 case 1: 
-                    controller.addParticipant(new Asteroid(rand.nextInt(3), 0, this.getX(), this.getY(), rand.nextInt(3) + 1, controller));
-                    controller.addParticipant(new Asteroid(rand.nextInt(3), 0, this.getX(), this.getY(), rand.nextInt(3) + 1, controller));
+                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 0, this.getX(), this.getY(), RANDOM.nextInt(3) + 1, controller));
+                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 0, this.getX(), this.getY(), RANDOM.nextInt(3) + 1, controller));
                     break;
                 case 2: 
-                    controller.addParticipant(new Asteroid(rand.nextInt(3), 1, this.getX(), this.getY(), rand.nextInt(2) + 1, controller));
-                    controller.addParticipant(new Asteroid(rand.nextInt(3), 1, this.getX(), this.getY(), rand.nextInt(2) + 1, controller));
+                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 1, this.getX(), this.getY(), RANDOM.nextInt(2) + 1, controller));
+                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 1, this.getX(), this.getY(), RANDOM.nextInt(2) + 1, controller));
                     break;           
             }
+
+            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation(), controller));
+            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation() + Math.PI, controller));
+            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation(), controller));
+            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation() + Math.PI / 2, controller));
             
             Participant.expire(this);
 
