@@ -35,7 +35,7 @@ public class Bullet extends Participant implements AsteroidDestroyer
     }
     
     /**
-     * Creates the outline of the asteroid based on its variety and size.
+     * Creates the outline of the bullet.
      */
     private void createBulletOutline ()
     {
