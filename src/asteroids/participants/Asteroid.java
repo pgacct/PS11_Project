@@ -161,10 +161,10 @@ public class Asteroid extends Participant implements ShipDestroyer
                     break;           
             }
 
-            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation(), controller));
-            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation() + Math.PI, controller));
-            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation() + Math.PI / 3, controller));
-            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation() + Math.PI / 2, controller));
+            controller.addParticipant(new Debris(false, false, this.getX(), this.getY(), this.getRotation() + RANDOM.nextDouble() * 2 * Math.PI, controller));
+            controller.addParticipant(new Debris(false, false, this.getX(), this.getY(), this.getRotation() + RANDOM.nextDouble() * 2 * Math.PI, controller));
+            controller.addParticipant(new Debris(false, false, this.getX(), this.getY(), this.getRotation() + RANDOM.nextDouble() * 2 * Math.PI, controller));
+            controller.addParticipant(new Debris(false, false, this.getX(), this.getY(), this.getRotation() + RANDOM.nextDouble() * 2 * Math.PI, controller));
             
             Participant.expire(this);
 

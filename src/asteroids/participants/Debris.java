@@ -15,18 +15,53 @@ public class Debris extends Participant
     /** The shape of the bullet */
     private Shape outline;
 
-    public Debris (double x, double y, double direction, Controller controller)
+    /** Specifies if it is Ship or Asteroid Debris */
+    private boolean isShip;
+    
+    /**For ship, specifies if it's for a long piece or short piece.*/
+    private boolean isLong;
+
+    /**
+     * Constructs debris based on if a ship or asteroid is hit.
+     * Parameters (boolean ShipOrAst, boolean isLong, double x, double y, double direction, Controller controller)
+     */
+    public Debris (boolean ShipOrAst, boolean LongOrShort, double x, double y, double direction, Controller controller)
     {
         this.controller = controller;
         setPosition(x, y);
         setSpeed(Constants.RANDOM.nextInt(3));
         setDirection(direction);
-        createDebrisOutline();
+        setRotation(Constants.RANDOM.nextDouble() * 2 * Math.PI);
+        isShip = ShipOrAst;
+        isLong = LongOrShort;
+        int debrisDuration = 0;
+        
+        if (isShip)
+        {
+            debrisDuration = 1500;
+            if (isLong)
+            {
+                createLongShipDebrisOutline(); 
+                
+            }
+            else
+            {
+                createShortShipDebrisOutline();
+                
+            }
+        }
+        else
+        {
+            createDebrisOutline();
+            debrisDuration = Constants.RANDOM.nextInt(1500) + 250;
+        }
+
 
         // Makes the bullet expire after the specified time
-        new ParticipantCountdownTimer(this, "debris", Constants.RANDOM.nextInt(1500) + 250);
+        new ParticipantCountdownTimer(this, "debris", debrisDuration);
     }
-// change
+
+
     @Override
     protected Shape getOutline ()
     {
@@ -46,6 +81,34 @@ public class Debris extends Participant
         poly.lineTo(0, 0.5);
         poly.lineTo(0.5, 0);
         poly.closePath();
+        outline = poly;
+    }
+    
+    /**
+     * Creates the long pieces of debris when the ship is hit.
+     */
+    private void createLongShipDebrisOutline ()
+    {
+        // This will contain the outline
+        Path2D.Double poly = new Path2D.Double();
+
+        poly.moveTo(12, 0);
+        poly.lineTo(0, 12);
+        //poly.closePath();
+        outline = poly;
+    }
+    
+    /**
+     * Creates the short pieces of debris when the ship is hit.
+     */
+    private void createShortShipDebrisOutline ()
+    {
+        // This will contain the outline
+        Path2D.Double poly = new Path2D.Double();
+
+        poly.moveTo(3, 0);
+        poly.lineTo(-3, 0);
+        //poly.closePath();
         outline = poly;
     }
 
