@@ -152,18 +152,18 @@ public class Asteroid extends Participant implements ShipDestroyer
                 case 0: 
                     break;
                 case 1: 
-                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 0, this.getX(), this.getY(), RANDOM.nextInt(3) + 1, controller));
-                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 0, this.getX(), this.getY(), RANDOM.nextInt(3) + 1, controller));
+                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 0, this.getX(), this.getY(), RANDOM.nextInt(Constants.MAXIMUM_SMALL_ASTEROID_SPEED - Constants.MAXIMUM_LARGE_ASTEROID_SPEED + 1) + Constants.MAXIMUM_LARGE_ASTEROID_SPEED, controller));
+                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 0, this.getX(), this.getY(), RANDOM.nextInt(Constants.MAXIMUM_SMALL_ASTEROID_SPEED - Constants.MAXIMUM_LARGE_ASTEROID_SPEED + 1) + Constants.MAXIMUM_LARGE_ASTEROID_SPEED, controller));
                     break;
                 case 2: 
-                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 1, this.getX(), this.getY(), RANDOM.nextInt(2) + 1, controller));
-                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 1, this.getX(), this.getY(), RANDOM.nextInt(2) + 1, controller));
+                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 1, this.getX(), this.getY(), RANDOM.nextInt(Constants.MAXIMUM_MEDIUM_ASTEROID_SPEED - Constants.MAXIMUM_LARGE_ASTEROID_SPEED + 1) + Constants.MAXIMUM_LARGE_ASTEROID_SPEED, controller));
+                    controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 1, this.getX(), this.getY(), RANDOM.nextInt(Constants.MAXIMUM_MEDIUM_ASTEROID_SPEED - Constants.MAXIMUM_LARGE_ASTEROID_SPEED + 1) + Constants.MAXIMUM_LARGE_ASTEROID_SPEED, controller));
                     break;           
             }
 
             controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation(), controller));
             controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation() + Math.PI, controller));
-            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation(), controller));
+            controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation() + Math.PI / 3, controller));
             controller.addParticipant(new Debris(this.getX(), this.getY(), this.getRotation() + Math.PI / 2, controller));
             
             Participant.expire(this);

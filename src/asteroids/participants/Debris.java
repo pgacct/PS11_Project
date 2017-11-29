@@ -24,7 +24,7 @@ public class Debris extends Participant
         createDebrisOutline();
 
         // Makes the bullet expire after the specified time
-        new ParticipantCountdownTimer(this, "debris", Constants.RANDOM.nextInt(1500));
+        new ParticipantCountdownTimer(this, "debris", Constants.RANDOM.nextInt(1500) + 250);
     }
 // change
     @Override
