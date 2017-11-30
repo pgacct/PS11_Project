@@ -12,12 +12,21 @@ public class Display extends JFrame
 {
     /** The area where the action takes place */
     private Screen screen;
-
+    
+    /** The system that displays lives remaining, level, and score */
+    private JLabel lives;
+    private JLabel level;
+    private JLabel points;
+    
+    private Controller controller;
+    
     /**
      * Lays out the game and creates the controller
      */
     public Display (Controller controller)
     {
+        this.controller = controller;
+        
         // Title at the top
         setTitle(TITLE);
 
@@ -35,10 +44,22 @@ public class Display extends JFrame
 
         // This panel contains buttons and labels
         JPanel controls = new JPanel();
+        controls.setLayout(new BorderLayout());
 
         // The button that starts the game
         JButton startGame = new JButton(START_LABEL);
-        controls.add(startGame);
+        controls.add(startGame,"Center");
+        
+        // The Points System lives remaining, level, and score
+        JPanel system = new JPanel();
+        controls.add(system,"East");
+        system.setLayout(new FlowLayout());
+        lives = new JLabel("Lives: " + controller.shipLives());
+        level = new JLabel("Level: " + controller.currentLevel());
+        points = new JLabel("Points: " + controller.numPoints());
+        system.add(lives);
+        system.add(level);
+        system.add(points);
 
         // Organize everything
         JPanel mainPanel = new JPanel();
@@ -58,6 +79,13 @@ public class Display extends JFrame
     public void refresh ()
     {
         screen.repaint();
+        repaint();
+    }
+    
+    public void repaint() {
+        lives.setText("Lives: " + controller.shipLives());
+        level.setText("Level: " + controller.currentLevel());
+        points.setText("Points: " + controller.numPoints());
     }
 
     /**

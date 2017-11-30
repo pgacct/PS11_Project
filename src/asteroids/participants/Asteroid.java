@@ -150,12 +150,15 @@ public class Asteroid extends Participant implements ShipDestroyer
             switch (this.getSize())
             {
                 case 0: 
+                    controller.addPoints(100);
                     break;
                 case 1: 
+                    controller.addPoints(50);
                     controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 0, this.getX(), this.getY(), RANDOM.nextInt(Constants.MAXIMUM_SMALL_ASTEROID_SPEED - Constants.MAXIMUM_LARGE_ASTEROID_SPEED + 1) + Constants.MAXIMUM_LARGE_ASTEROID_SPEED, controller));
                     controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 0, this.getX(), this.getY(), RANDOM.nextInt(Constants.MAXIMUM_SMALL_ASTEROID_SPEED - Constants.MAXIMUM_LARGE_ASTEROID_SPEED + 1) + Constants.MAXIMUM_LARGE_ASTEROID_SPEED, controller));
                     break;
                 case 2: 
+                    controller.addPoints(20);
                     controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 1, this.getX(), this.getY(), RANDOM.nextInt(Constants.MAXIMUM_MEDIUM_ASTEROID_SPEED - Constants.MAXIMUM_LARGE_ASTEROID_SPEED + 1) + Constants.MAXIMUM_LARGE_ASTEROID_SPEED, controller));
                     controller.addParticipant(new Asteroid(RANDOM.nextInt(3), 1, this.getX(), this.getY(), RANDOM.nextInt(Constants.MAXIMUM_MEDIUM_ASTEROID_SPEED - Constants.MAXIMUM_LARGE_ASTEROID_SPEED + 1) + Constants.MAXIMUM_LARGE_ASTEROID_SPEED, controller));
                     break;           

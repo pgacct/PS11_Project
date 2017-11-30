@@ -31,6 +31,12 @@ public class Controller implements KeyListener, ActionListener
 
     /** Number of lives left */
     private int lives;
+    
+    /** The current Level */
+    private int level;
+    
+    /** The current Number of Points */
+    private int points;
 
     /** The game display */
     private Display display;
@@ -147,7 +153,13 @@ public class Controller implements KeyListener, ActionListener
         placeShip();
 
         // Reset statistics
-        lives = 1;
+        lives = 3;
+        
+        //Reset Level
+        level = 1;
+        
+        //Reset points
+        points = 0;
 
         // Start listening to events (but don't listen twice)
         display.removeKeyListener(this);
@@ -181,6 +193,35 @@ public class Controller implements KeyListener, ActionListener
 
         // Since the ship was destroyed, schedule a transition
         scheduleTransition(END_DELAY);
+    }
+    
+    
+    /**
+     * 
+     * @return the number of ship lives
+     */
+    public int shipLives() {
+        return lives;
+    }
+    
+    /**
+     * 
+     * @return the number of points
+     */
+    public int numPoints(){
+        return points;
+    }
+    
+    public void addPoints(int Points) {
+        points += Points;
+    }
+    
+    /**
+     * 
+     * @return the current Level
+     */
+    public int currentLevel() {
+        return level;
     }
 
     /**
