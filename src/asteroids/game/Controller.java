@@ -119,6 +119,10 @@ public class Controller implements KeyListener, ActionListener
                 SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
+        for(int x = 0;x < level -1;x++) {
+            addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(150) - 50,
+                    SIZE - EDGE_OFFSET + RANDOM.nextInt(150) - 50, 3, this));
+        }
     }
 
     /**
@@ -191,11 +195,13 @@ public class Controller implements KeyListener, ActionListener
 
         // Null out the ship
         ship = null;
+        
+        // Display a legend
+        display.setLegend("Ouch!");
 
         if (lives == 0)
         {
-            // Display a legend
-            display.setLegend("Ouch!");
+            
         }
         else
         {
@@ -247,6 +253,8 @@ public class Controller implements KeyListener, ActionListener
         if (pstate.countAsteroids() == 0)
         {
             scheduleTransition(END_DELAY);
+            level++;
+            display.setLegend("Next Level/n" + level);
         }
     }
 
