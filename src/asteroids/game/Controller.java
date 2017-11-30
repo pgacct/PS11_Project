@@ -37,7 +37,10 @@ public class Controller implements KeyListener, ActionListener
 
     /** The current Number of Points */
     private int points;
-
+    
+    /** Whether there is a new level */
+    private boolean newLevel = false;
+    
     /** The game display */
     private Display display;
 
@@ -119,9 +122,9 @@ public class Controller implements KeyListener, ActionListener
                 SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
-        for(int x = 0;x < level -1;x++) {
-            addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(150) - 50,
-                    SIZE - EDGE_OFFSET + RANDOM.nextInt(150) - 50, 3, this));
+        for(int x = 0;x < level - 1;x++) {
+            addParticipant(new Asteroid(RANDOM.nextInt(4), 2,-EDGE_OFFSET + RANDOM.nextInt(100) - 50,
+                    -EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         }
     }
 
@@ -254,7 +257,8 @@ public class Controller implements KeyListener, ActionListener
         {
             scheduleTransition(END_DELAY);
             level++;
-            display.setLegend("Next Level/n" + level);
+            display.setLegend("Next Level: " + level);
+            newLevel = true;
         }
     }
 
@@ -317,6 +321,11 @@ public class Controller implements KeyListener, ActionListener
             if (lives <= 0)
             {
                 finalScreen();
+            }
+            if (newLevel){
+                display.setLegend("");
+                placeAsteroids();
+                newLevel = false;
             }
         }
     }
