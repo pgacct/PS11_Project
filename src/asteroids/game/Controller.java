@@ -31,10 +31,10 @@ public class Controller implements KeyListener, ActionListener
 
     /** Number of lives left */
     private int lives;
-    
+
     /** The current Level */
     private int level;
-    
+
     /** The current Number of Points */
     private int points;
 
@@ -111,10 +111,14 @@ public class Controller implements KeyListener, ActionListener
      */
     private void placeAsteroids ()
     {
-        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50, EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
-        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
-        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
-        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
+        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50,
+                EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
+        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
+                EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
+        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50,
+                SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
+        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
+                SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
     }
 
     /**
@@ -124,12 +128,12 @@ public class Controller implements KeyListener, ActionListener
     {
         if (pstate.countBullets() <= Constants.BULLET_LIMIT)
         {
-        addParticipant(new Bullet(ship.getXNose(), ship.getYNose(), ship.getRotation(), this));
+            addParticipant(new Bullet(ship.getXNose(), ship.getYNose(), ship.getRotation(), this));
         }
     }
 
     /**
-     * Clears the screen so that nothing is displayed   
+     * Clears the screen so that nothing is displayed
      */
     private void clear ()
     {
@@ -154,11 +158,11 @@ public class Controller implements KeyListener, ActionListener
 
         // Reset statistics
         lives = 3;
-        
-        //Reset Level
+
+        // Reset Level
         level = 1;
-        
-        //Reset points
+
+        // Reset points
         points = 0;
 
         // Start listening to events (but don't listen twice)
@@ -182,45 +186,55 @@ public class Controller implements KeyListener, ActionListener
      */
     public void shipDestroyed ()
     {
+        // Decrement lives
+        lives--;
+
         // Null out the ship
         ship = null;
 
-        // Display a legend
-        display.setLegend("Ouch!");
-
-        // Decrement lives
-        lives--;
+        if (lives == 0)
+        {
+            // Display a legend
+            display.setLegend("Ouch!");
+        }
+        else
+        {
+            placeShip();
+        }
 
         // Since the ship was destroyed, schedule a transition
         scheduleTransition(END_DELAY);
     }
-    
-    
+
     /**
      * 
      * @return the number of ship lives
      */
-    public int shipLives() {
+    public int shipLives ()
+    {
         return lives;
     }
-    
+
     /**
      * 
      * @return the number of points
      */
-    public int numPoints(){
+    public int numPoints ()
+    {
         return points;
     }
-    
-    public void addPoints(int Points) {
+
+    public void addPoints (int Points)
+    {
         points += Points;
     }
-    
+
     /**
      * 
      * @return the current Level
      */
-    public int currentLevel() {
+    public int currentLevel ()
+    {
         return level;
     }
 
