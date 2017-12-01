@@ -14,7 +14,8 @@ public class Bullet extends Participant implements AsteroidDestroyer
     private Controller controller;
     
     /**The shape of the bullet */
-    private Shape outline;
+    private Shape outline;  
+    
     
     public Bullet (double x, double y, double direction, Controller controller)
     {

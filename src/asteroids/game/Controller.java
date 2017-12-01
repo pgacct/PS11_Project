@@ -21,7 +21,7 @@ public class Controller implements KeyListener, ActionListener
 
     /** When this timer goes off, it is time to refresh the animation */
     private Timer refreshTimer;
-
+    
     /**
      * The time at which a transition to a new stage of the game should be made. A transition is scheduled a few seconds
      * in the future to give the user time to see what has happened before doing something like going to a new level or
@@ -43,6 +43,9 @@ public class Controller implements KeyListener, ActionListener
     
     /** The game display */
     private Display display;
+    
+    /**Tracks if one of the bullet keys is being held down. */
+    private boolean fireBullets;
 
     /**
      * Constructs a controller to coordinate the game and screen
@@ -133,7 +136,7 @@ public class Controller implements KeyListener, ActionListener
      */
     private void placeBullets ()
     {
-        if (pstate.countBullets() <= Constants.BULLET_LIMIT)
+        if (pstate.countBullets() <= Constants.BULLET_LIMIT && ship != null)
         {
             addParticipant(new Bullet(ship.getXNose(), ship.getYNose(), ship.getRotation(), this));
         }
@@ -288,6 +291,12 @@ public class Controller implements KeyListener, ActionListener
         {
             // It may be time to make a game transition
             performTransition();
+            
+            //Fire bullets when a firing key is pressed.
+            if (fireBullets && ship != null)
+            {
+                placeBullets();
+            }
 
             // Move the participants to their new locations
             pstate.moveParticipants();
@@ -295,6 +304,7 @@ public class Controller implements KeyListener, ActionListener
             // Refresh screen
             display.refresh();
         }
+       
     }
 
     /**
@@ -355,7 +365,11 @@ public class Controller implements KeyListener, ActionListener
                 case KeyEvent.VK_DOWN:
                 case KeyEvent.VK_S:
                 case KeyEvent.VK_SPACE:
-                    placeBullets();
+                    if (!fireBullets)
+                    {
+                        placeBullets();
+                    }
+                    fireBullets = true;
                     break;
             }
         }
@@ -388,6 +402,11 @@ public class Controller implements KeyListener, ActionListener
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:
                     ship.setAcceleration(false);
+                    break;
+                case KeyEvent.VK_DOWN:
+                case KeyEvent.VK_S:
+                case KeyEvent.VK_SPACE:
+                    fireBullets = false;
                     break;
             }
         }

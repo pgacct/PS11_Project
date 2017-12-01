@@ -15,6 +15,9 @@ public class Ship extends Participant implements AsteroidDestroyer
 {
     /** The outline of the ship */
     private Shape outline;
+    
+    /**The outline of the ship with the accelerating flame.*/
+    private Shape outlineFlame;
 
     /** Game controller */
     private Controller controller;
@@ -24,6 +27,9 @@ public class Ship extends Participant implements AsteroidDestroyer
     
     /**Stores if the ship should accelerate*/
     private boolean shipAccel;
+    
+    /**Toggles the flame between off and on when ship is accelerating.*/
+    private boolean toggleAccelFlame;
 
     /**
      * Constructs a ship at the specified coordinates that is pointed in the given direction.
@@ -33,6 +39,7 @@ public class Ship extends Participant implements AsteroidDestroyer
         this.controller = controller;
         setPosition(x, y);
         setRotation(direction);
+        toggleAccelFlame = false;
 
         Path2D.Double poly = new Path2D.Double();
         poly.moveTo(21, 0);
@@ -42,6 +49,20 @@ public class Ship extends Participant implements AsteroidDestroyer
         poly.lineTo(-21, -12);
         poly.closePath();
         outline = poly;
+        
+        Path2D.Double polyFlame = new Path2D.Double();
+        polyFlame.moveTo(21, 0);
+        polyFlame.lineTo(-21, 12);
+        polyFlame.lineTo(-14, 10);
+        polyFlame.lineTo(-14, -10);
+        polyFlame.lineTo(-21, -12);
+        polyFlame.closePath();
+        //Draws the flame 
+        polyFlame.moveTo(-14, -5);
+        polyFlame.lineTo(-14, 5);
+        polyFlame.lineTo(-25, 0);
+        polyFlame.closePath();
+        outlineFlame = polyFlame;
         
         dir = turnDirection.NONE;
     }
@@ -69,7 +90,22 @@ public class Ship extends Participant implements AsteroidDestroyer
     @Override
     protected Shape getOutline ()
     {
-        return outline;
+        if (shipAccel)
+        {
+            toggleAccelFlame = !toggleAccelFlame;
+            if (toggleAccelFlame)
+            {
+                return outlineFlame;
+            }
+            else
+            {
+                return outline;
+            }
+        }
+        else
+        {
+            return outline;
+        }        
     }
 
     /**
