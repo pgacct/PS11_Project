@@ -11,7 +11,7 @@ import asteroids.game.ParticipantCountdownTimer;
 /**
  * Represents ships
  */
-public class Ship extends Participant implements AsteroidDestroyer
+public class Ship extends Participant implements AsteroidDestroyer, AlienDestroyer
 {
     /** The outline of the ship */
     private Shape outline;
@@ -130,7 +130,7 @@ public class Ship extends Participant implements AsteroidDestroyer
         super.move();        
     }
     
-    /**Checks if the right key button is pressed*/
+    /**Checks if a turn key button is pressed*/
     public void setTurnDirection (turnDirection turn)
     {
         dir = turn;

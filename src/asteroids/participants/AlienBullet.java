@@ -2,14 +2,14 @@ package asteroids.participants;
 
 import java.awt.Shape;
 import java.awt.geom.Path2D;
-import asteroids.destroyers.AlienDestroyer;
 import asteroids.destroyers.AsteroidDestroyer;
+import asteroids.destroyers.ShipDestroyer;
 import asteroids.game.Constants;
 import asteroids.game.Controller;
 import asteroids.game.Participant;
 import asteroids.game.ParticipantCountdownTimer;
 
-public class Bullet extends Participant implements AsteroidDestroyer, AlienDestroyer
+public class AlienBullet extends Participant implements ShipDestroyer, AsteroidDestroyer
 {
     /** The game controller */
     private Controller controller;
@@ -18,7 +18,7 @@ public class Bullet extends Participant implements AsteroidDestroyer, AlienDestr
     private Shape outline;  
     
     
-    public Bullet (double x, double y, double direction, Controller controller)
+    public AlienBullet (double x, double y, double direction, Controller controller)
     {
         this.controller = controller;
         setPosition(x, y); 
@@ -27,7 +27,7 @@ public class Bullet extends Participant implements AsteroidDestroyer, AlienDestr
         createBulletOutline();
         
         //Makes the bullet expire after the specified time
-        new ParticipantCountdownTimer(this, "bullet", Constants.BULLET_DURATION);
+        new ParticipantCountdownTimer(this, "alienBullet", Constants.BULLET_DURATION);
     }
     
     @Override
@@ -55,13 +55,11 @@ public class Bullet extends Participant implements AsteroidDestroyer, AlienDestr
     @Override
     public void collidedWith (Participant p)
     {
-        if (p instanceof Asteroid)
+        if (p instanceof Ship)
         {
             // Expire the bullet from the game
             Participant.expire(this);
 
-            // Tell the controller the bullet was destroyed
-            //controller.bulletDestroyed();
         }        
     }
     
@@ -72,10 +70,11 @@ public class Bullet extends Participant implements AsteroidDestroyer, AlienDestr
     public void countdownComplete (Object payload)
     {
         // Tells the bullet to expire after the countdown.
-        if (payload.equals("bullet"))
+        if (payload.equals("alienBullet"))
         {
             Participant.expire(this);
         }
     }
 
 }
+

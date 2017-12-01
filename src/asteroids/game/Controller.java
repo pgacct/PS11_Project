@@ -4,6 +4,8 @@ import static asteroids.game.Constants.*;
 import java.awt.event.*;
 import java.util.Iterator;
 import javax.swing.*;
+import asteroids.participants.Alien;
+import asteroids.participants.AlienBullet;
 import asteroids.participants.Asteroid;
 import asteroids.participants.Bullet;
 import asteroids.participants.Ship;
@@ -18,9 +20,21 @@ public class Controller implements KeyListener, ActionListener
 
     /** The ship (if one is active) or null (otherwise) */
     private Ship ship;
+    
+    /** The alien (if one is active) or null otherwise */
+    private Alien alien;
 
     /** When this timer goes off, it is time to refresh the animation */
     private Timer refreshTimer;
+    
+    /** Timer for alien ship */
+    private Timer alienTimer;
+    
+    /**Timer for alien bullets */
+    private Timer alienBulletTimer;
+    
+    /**Timer for changing direction of alien ship */
+    private Timer alienDirectionTimer;
     
     /**
      * The time at which a transition to a new stage of the game should be made. A transition is scheduled a few seconds
@@ -57,6 +71,11 @@ public class Controller implements KeyListener, ActionListener
 
         // Set up the refresh timer.
         refreshTimer = new Timer(FRAME_INTERVAL, this);
+        
+        //Alien timer
+        alienTimer = new Timer(ALIEN_DELAY, this);
+        alienBulletTimer = new Timer(1200, this);
+        alienDirectionTimer = new Timer(2000, this);
 
         // Clear the transitionTime
         transitionTime = Long.MAX_VALUE;
@@ -68,6 +87,9 @@ public class Controller implements KeyListener, ActionListener
         splashScreen();
         display.setVisible(true);
         refreshTimer.start();
+        alienTimer.start();
+        alienBulletTimer.start();
+        alienDirectionTimer.start();
     }
 
     /**
@@ -141,6 +163,29 @@ public class Controller implements KeyListener, ActionListener
             addParticipant(new Bullet(ship.getXNose(), ship.getYNose(), ship.getRotation(), this));
         }
     }
+    
+    /**
+     * Places alien bullets on the screen.
+     */
+    private void placeAlienBullets ()
+    {
+        if (alien != null)
+        {
+            addParticipant(new AlienBullet(alien.getX(), alien.getY(), RANDOM.nextDouble() * Math.PI * 2, this));
+        }
+    }
+    
+    /**
+     * Places alien ships on the screen. Removes any existing alien first.
+     */
+    private void placeAlien()
+    {
+        if (level == 2)
+        {
+            alien = new Alien(1, this);
+            addParticipant(alien);
+        }
+    }
 
     /**
      * Clears the screen so that nothing is displayed
@@ -165,6 +210,9 @@ public class Controller implements KeyListener, ActionListener
 
         // Place the ship
         placeShip();
+        
+        // Remove any alien ships from game.
+        alien = null;
 
         // Reset statistics
         lives = 3;
@@ -174,7 +222,7 @@ public class Controller implements KeyListener, ActionListener
 
         // Reset points
         points = 0;
-
+        
         // Start listening to events (but don't listen twice)
         display.removeKeyListener(this);
         display.addKeyListener(this);
@@ -216,6 +264,19 @@ public class Controller implements KeyListener, ActionListener
 
         // Since the ship was destroyed, schedule a transition
         scheduleTransition(END_DELAY);
+    }
+    
+    /**
+     * The alien ship has been destroyed.
+     */
+    public void alienDestroyed ()
+    {
+        if (level == 2)
+        {
+            addPoints(200);
+        }
+        alien = null;        
+        alienTimer.restart();
     }
 
     /**
@@ -304,7 +365,29 @@ public class Controller implements KeyListener, ActionListener
             // Refresh screen
             display.refresh();
         }
+        else if (e.getSource() == alienTimer)
+        {
+            if(level == 2 && alien == null)
+            {
+                placeAlien();
+            }
+        }
+        else if (e.getSource() == alienBulletTimer)
+        {
+            if (alien != null)
+            {
+            placeAlienBullets();
+            }
+        }
+        else if (e.getSource() == alienDirectionTimer)
+        {
+            if (alien != null)
+            {
+            alien.changeTurnDirection(alien.alienDirection());
+            }
+        }
        
+        
     }
 
     /**
