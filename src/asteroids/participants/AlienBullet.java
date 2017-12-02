@@ -22,8 +22,8 @@ public class AlienBullet extends Participant implements ShipDestroyer, AsteroidD
     {
         this.controller = controller;
         setPosition(x, y); 
-        setSpeed(Constants.BULLET_SPEED);        
-        setDirection(direction);         
+        setSpeed(Constants.BULLET_SPEED);  
+        setDirection(direction);   
         createBulletOutline();
         
         //Makes the bullet expire after the specified time

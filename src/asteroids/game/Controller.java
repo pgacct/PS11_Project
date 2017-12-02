@@ -169,9 +169,18 @@ public class Controller implements KeyListener, ActionListener
      */
     private void placeAlienBullets ()
     {
-        if (alien != null)
+        if (level == 2 && alien != null)
         {
             addParticipant(new AlienBullet(alien.getX(), alien.getY(), RANDOM.nextDouble() * Math.PI * 2, this));
+        }
+        if (level > 2 && alien != null && ship != null)
+        {
+            //Angle to fire directly at ship
+            double angle = Math.atan2(ship.getY() - alien.getY(), ship.getX() - alien.getX());
+            //Adjust angle randomly by 5 degrees 
+            double randAngleAdj = (RANDOM.nextInt(11) - 5) * Math.PI / 180;
+            //Add bullets
+            addParticipant(new AlienBullet(alien.getX(), alien.getY(), Participant.normalize(angle) + randAngleAdj, this));
         }
     }
     
@@ -182,7 +191,12 @@ public class Controller implements KeyListener, ActionListener
     {
         if (level == 2)
         {
-            alien = new Alien(1, this);
+            alien = new Alien(1, 3, this);
+            addParticipant(alien);
+        }
+        if (level > 2)
+        {
+            alien = new Alien(0, 5, this);
             addParticipant(alien);
         }
     }
@@ -195,6 +209,8 @@ public class Controller implements KeyListener, ActionListener
         pstate.clear();
         display.setLegend("");
         ship = null;
+        alien = null;
+        alienTimer.restart();
     }
 
     /**
@@ -215,10 +231,10 @@ public class Controller implements KeyListener, ActionListener
         alien = null;
 
         // Reset statistics
-        lives = 3;
+        lives = 3;  //should be 3, changed to give more lives when testing
 
         // Reset Level
-        level = 1;
+        level = 1;  //should be 1, testing at different levels
 
         // Reset points
         points = 0;
@@ -274,6 +290,10 @@ public class Controller implements KeyListener, ActionListener
         if (level == 2)
         {
             addPoints(200);
+        }
+        if (level > 2)
+        {
+            addPoints(1000);
         }
         alien = null;        
         alienTimer.restart();
@@ -371,6 +391,10 @@ public class Controller implements KeyListener, ActionListener
             {
                 placeAlien();
             }
+            if(level > 2 && alien == null)
+            {
+                placeAlien();
+            }
         }
         else if (e.getSource() == alienBulletTimer)
         {
@@ -416,7 +440,8 @@ public class Controller implements KeyListener, ActionListener
                 finalScreen();
             }
             if (newLevel){
-                display.setLegend("");
+                clear();
+                placeShip();
                 placeAsteroids();
                 newLevel = false;
             }

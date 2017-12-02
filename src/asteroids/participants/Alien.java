@@ -1,8 +1,6 @@
 package asteroids.participants;
 
-import static asteroids.game.Constants.ASTEROID_SCALE;
 import static asteroids.game.Constants.RANDOM;
-import java.awt.Graphics;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
@@ -12,7 +10,6 @@ import asteroids.destroyers.ShipDestroyer;
 import asteroids.game.Constants;
 import asteroids.game.Controller;
 import asteroids.game.Participant;
-import asteroids.game.ParticipantCountdownTimer;
 
 public class Alien extends Participant implements ShipDestroyer, AsteroidDestroyer
 {
@@ -28,11 +25,11 @@ public class Alien extends Participant implements ShipDestroyer, AsteroidDestroy
     /**
      * Constructs an alien ship at the specified coordinates that is pointed in the given direction.
      */
-    public Alien (int alienSize, Controller controller)
+    public Alien (int alienSize, int alienSpeed, Controller controller)
     {
         this.controller = controller;
         setPosition(-5, Constants.RANDOM.nextDouble() * Constants.SIZE);
-        setSpeed(8);        
+        setSpeed(alienSpeed);        
         setDirection(alienDirection());
 
         Path2D.Double poly = new Path2D.Double();
@@ -69,7 +66,7 @@ public class Alien extends Participant implements ShipDestroyer, AsteroidDestroy
     public double alienDirection()
     {
         int directionChoice = Constants.RANDOM.nextInt(6);
-        double direction = 0;
+        double direction = 0.0;
 
         // Randomly choose the direction of alien ship.
         switch (directionChoice)
@@ -81,16 +78,16 @@ public class Alien extends Participant implements ShipDestroyer, AsteroidDestroy
                 direction = Math.PI;  // Goes to left horizontally.
                 break;
             case 2:
-                direction = 180 / Math.PI;   // 1 radian downward from horizontal. To the right.
+                direction = 1;   // 1 radian downward from horizontal. To the right.
                 break;
             case 3:
-                direction = -180 / Math.PI;   // 1 radian upward from horizontal. To the right.
+                direction = -1;   // 1 radian upward from horizontal. To the right.
                 break;
             case 4:
-                direction = 180 / (Math.PI * 2);   // 1 radian downward from horizontal. To the left.
+                direction = 2;   // 1 radian downward from horizontal. To the left.
                 break;
             case 5:
-                direction = -180 / (Math.PI * 2);   // 1 radian upward from horizontal. To the left.
+                direction = -2;   // 1 radian upward from horizontal. To the left.
                 break;
         }
         return direction;
