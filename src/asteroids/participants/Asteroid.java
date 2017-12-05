@@ -169,11 +169,15 @@ public class Asteroid extends Participant implements ShipDestroyer, AlienDestroy
             controller.addParticipant(new Debris(false, false, this.getX(), this.getY(), this.getRotation() + RANDOM.nextDouble() * 2 * Math.PI, controller));
             controller.addParticipant(new Debris(false, false, this.getX(), this.getY(), this.getRotation() + RANDOM.nextDouble() * 2 * Math.PI, controller));
             controller.addParticipant(new Debris(false, false, this.getX(), this.getY(), this.getRotation() + RANDOM.nextDouble() * 2 * Math.PI, controller));
+              
+            //Store the size of the asteroid destroyed so correct sound can be played.
+            int asteroidSizeSound = this.getSize();
             
             Participant.expire(this);
-
+            
             // Inform the controller
-            controller.asteroidDestroyed();
+            controller.asteroidDestroyed(asteroidSizeSound);           
+            
         }
     }
 }

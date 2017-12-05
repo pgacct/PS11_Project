@@ -2,6 +2,7 @@ package asteroids.participants;
 
 import java.awt.Shape;
 import java.awt.geom.Path2D;
+import javax.sound.sampled.Clip;
 import asteroids.destroyers.AlienDestroyer;
 import asteroids.destroyers.AsteroidDestroyer;
 import asteroids.game.Constants;
@@ -16,6 +17,9 @@ public class Bullet extends Participant implements AsteroidDestroyer, AlienDestr
     
     /**The shape of the bullet */
     private Shape outline;  
+    
+    /** A Clip that, when played, sounds like a weapon being fired */
+    private Clip bulletClip;
     
     
     public Bullet (double x, double y, double direction, Controller controller)

@@ -3,6 +3,7 @@ package asteroids.participants;
 import static asteroids.game.Constants.*;
 import java.awt.Shape;
 import java.awt.geom.*;
+import javax.sound.sampled.Clip;
 import asteroids.destroyers.*;
 import asteroids.game.Controller;
 import asteroids.game.Participant;
@@ -30,6 +31,9 @@ public class Ship extends Participant implements AsteroidDestroyer, AlienDestroy
     
     /**Toggles the flame between off and on when ship is accelerating.*/
     private boolean toggleAccelFlame;
+    
+    /**Sound when the ship is accelerating forward*/
+    private Clip thrust;
 
     /**
      * Constructs a ship at the specified coordinates that is pointed in the given direction.
@@ -40,6 +44,7 @@ public class Ship extends Participant implements AsteroidDestroyer, AlienDestroy
         setPosition(x, y);
         setRotation(direction);
         toggleAccelFlame = false;
+        thrust = controller.createClip("/sounds/thrust.wav");
 
         Path2D.Double poly = new Path2D.Double();
         poly.moveTo(21, 0);
@@ -163,6 +168,7 @@ public class Ship extends Participant implements AsteroidDestroyer, AlienDestroy
      */
     public void accelerate ()
     {
+        controller.playSound(thrust);
         accelerate(SHIP_ACCELERATION);
     }
 

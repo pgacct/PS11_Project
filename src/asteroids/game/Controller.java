@@ -2,7 +2,13 @@ package asteroids.game;
 
 import static asteroids.game.Constants.*;
 import java.awt.event.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.util.Iterator;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import asteroids.participants.Alien;
 import asteroids.participants.AlienBullet;
@@ -20,22 +26,28 @@ public class Controller implements KeyListener, ActionListener
 
     /** The ship (if one is active) or null (otherwise) */
     private Ship ship;
-    
+
     /** The alien (if one is active) or null otherwise */
     private Alien alien;
 
     /** When this timer goes off, it is time to refresh the animation */
     private Timer refreshTimer;
-    
+
     /** Timer for alien ship */
     private Timer alienTimer;
-    
-    /**Timer for alien bullets */
+
+    /** Timer for alien bullets */
     private Timer alienBulletTimer;
-    
-    /**Timer for changing direction of alien ship */
+
+    /** Timer for changing direction of alien ship */
     private Timer alienDirectionTimer;
-    
+
+    /** Timer for the beat sounds */
+    private Timer beatTimer;
+
+    /** Timer for ship respawn */
+    private Timer shipSpawn;
+
     /**
      * The time at which a transition to a new stage of the game should be made. A transition is scheduled a few seconds
      * in the future to give the user time to see what has happened before doing something like going to a new level or
@@ -51,15 +63,37 @@ public class Controller implements KeyListener, ActionListener
 
     /** The current Number of Points */
     private int points;
-    
+
     /** Whether there is a new level */
     private boolean newLevel = false;
-    
+
     /** The game display */
     private Display display;
-    
-    /**Tracks if one of the bullet keys is being held down. */
+
+    /** Tracks if one of the bullet keys is being held down. */
     private boolean fireBullets;
+
+    /** Sound for shooting bullets */
+    private Clip fireClip;
+
+    /** A Clip that, when played repeatedly, sounds like a small saucer flying */
+    private Clip smallSaucerClip;
+
+    /** A Clip that, when played repeatedly, sounds like a big saucer flying */
+    private Clip bigSaucerClip;
+    private Clip bangAlienShip;
+    private Clip bangLarge;
+    private Clip bangMedium;
+    private Clip bangShip;
+    private Clip bangSmall;
+    private Clip beat1;
+    private Clip beat2;
+
+    /** Toggles between beat1 and beat 2 */
+    private boolean toggleBeat;
+
+    /** Stores the current beat */
+    private int beatDelay;
 
     /**
      * Constructs a controller to coordinate the game and screen
@@ -71,11 +105,13 @@ public class Controller implements KeyListener, ActionListener
 
         // Set up the refresh timer.
         refreshTimer = new Timer(FRAME_INTERVAL, this);
-        
-        //Alien timer
+
+        // Set up timers
         alienTimer = new Timer(ALIEN_DELAY, this);
         alienBulletTimer = new Timer(1200, this);
         alienDirectionTimer = new Timer(2000, this);
+        beatTimer = new Timer(INITIAL_BEAT, this);
+        shipSpawn = new Timer(2000, this);
 
         // Clear the transitionTime
         transitionTime = Long.MAX_VALUE;
@@ -90,6 +126,67 @@ public class Controller implements KeyListener, ActionListener
         alienTimer.start();
         alienBulletTimer.start();
         alienDirectionTimer.start();
+        beatTimer.start();
+
+        // Initialize the sounds clips
+        fireClip = createClip("/sounds/fire.wav");
+        smallSaucerClip = createClip("/sounds/saucerSmall.wav");
+        bigSaucerClip = createClip("/sounds/saucerBig.wav");
+        bangAlienShip = createClip("/sounds/bangAlienShip.wav");
+        bangLarge = createClip("/sounds/bangLarge.wav");
+        bangMedium = createClip("/sounds/bangMedium.wav");
+        bangShip = createClip("/sounds/bangShip.wav");
+        bangSmall = createClip("/sounds/bangSmall.wav");
+        beat1 = createClip("/sounds/beat1.wav");
+        beat2 = createClip("/sounds/beat2.wav");
+
+        toggleBeat = true;
+        beatDelay = INITIAL_BEAT;
+
+    }
+
+    /**
+     * Creates an audio clip from a sound file.
+     */
+    public Clip createClip (String soundFile)
+    {
+        // Opening the sound file this way will work no matter how the
+        // project is exported. The only restriction is that the
+        // sound files must be stored in a package.
+        try (BufferedInputStream sound = new BufferedInputStream(getClass().getResourceAsStream(soundFile)))
+        {
+            // Create and return a Clip that will play a sound file. There are
+            // various reasons that the creation attempt could fail. If it
+            // fails, return null.
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(sound));
+            return clip;
+        }
+        catch (LineUnavailableException e)
+        {
+            return null;
+        }
+        catch (IOException e)
+        {
+            return null;
+        }
+        catch (UnsupportedAudioFileException e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Plays the requested sound
+     */
+    public void playSound (Clip clipFile)
+    {
+        if (clipFile.isRunning())
+        {
+            clipFile.stop();
+        }
+        clipFile.setFramePosition(0);
+        clipFile.start();
     }
 
     /**
@@ -132,6 +229,7 @@ public class Controller implements KeyListener, ActionListener
         ship = new Ship(SIZE / 2, SIZE / 2, -Math.PI / 2, this);
         addParticipant(ship);
         display.setLegend("");
+        beatTimer.restart();
     }
 
     /**
@@ -147,8 +245,9 @@ public class Controller implements KeyListener, ActionListener
                 SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
-        for(int x = 0;x < level - 1;x++) {
-            addParticipant(new Asteroid(RANDOM.nextInt(4), 2,-EDGE_OFFSET + RANDOM.nextInt(100) - 50,
+        for (int x = 0; x < level - 1; x++)
+        {
+            addParticipant(new Asteroid(RANDOM.nextInt(4), 2, -EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                     -EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         }
     }
@@ -161,9 +260,12 @@ public class Controller implements KeyListener, ActionListener
         if (pstate.countBullets() <= Constants.BULLET_LIMIT && ship != null)
         {
             addParticipant(new Bullet(ship.getXNose(), ship.getYNose(), ship.getRotation(), this));
+
+            // Plays sounds when shooting
+            playSound(fireClip);
         }
     }
-    
+
     /**
      * Places alien bullets on the screen.
      */
@@ -175,29 +277,46 @@ public class Controller implements KeyListener, ActionListener
         }
         if (level > 2 && alien != null && ship != null)
         {
-            //Angle to fire directly at ship
+            // Angle to fire directly at ship
             double angle = Math.atan2(ship.getY() - alien.getY(), ship.getX() - alien.getX());
-            //Adjust angle randomly by 5 degrees 
+            // Adjust angle randomly by 5 degrees
             double randAngleAdj = (RANDOM.nextInt(11) - 5) * Math.PI / 180;
-            //Add bullets
-            addParticipant(new AlienBullet(alien.getX(), alien.getY(), Participant.normalize(angle) + randAngleAdj, this));
+            // Add bullets
+            addParticipant(
+                    new AlienBullet(alien.getX(), alien.getY(), Participant.normalize(angle) + randAngleAdj, this));
         }
     }
-    
+
     /**
      * Places alien ships on the screen. Removes any existing alien first.
      */
-    private void placeAlien()
+    private void placeAlien ()
     {
         if (level == 2)
         {
             alien = new Alien(1, 3, this);
             addParticipant(alien);
+
+            // Play big alien sounds
+            if (bigSaucerClip.isRunning())
+            {
+                bigSaucerClip.stop();
+            }
+            bigSaucerClip.setFramePosition(0);
+            bigSaucerClip.loop(Clip.LOOP_CONTINUOUSLY);
         }
         if (level > 2)
         {
             alien = new Alien(0, 5, this);
             addParticipant(alien);
+
+            // Play small alien sounds
+            if (smallSaucerClip.isRunning())
+            {
+                smallSaucerClip.stop();
+            }
+            smallSaucerClip.setFramePosition(0);
+            smallSaucerClip.loop(Clip.LOOP_CONTINUOUSLY);
         }
     }
 
@@ -210,6 +329,8 @@ public class Controller implements KeyListener, ActionListener
         display.setLegend("");
         ship = null;
         alien = null;
+        beatTimer.setDelay(INITIAL_BEAT);
+        beatTimer.restart();
         alienTimer.restart();
     }
 
@@ -226,19 +347,19 @@ public class Controller implements KeyListener, ActionListener
 
         // Place the ship
         placeShip();
-        
+
         // Remove any alien ships from game.
         alien = null;
 
         // Reset statistics
-        lives = 3;  //should be 3, changed to give more lives when testing
+        lives = 3;  // should be 3, changed to give more lives when testing
 
         // Reset Level
-        level = 1;  //should be 1, testing at different levels
+        level = 1;  // should be 1, testing at different levels
 
         // Reset points
         points = 0;
-        
+
         // Start listening to events (but don't listen twice)
         display.removeKeyListener(this);
         display.addKeyListener(this);
@@ -260,28 +381,35 @@ public class Controller implements KeyListener, ActionListener
      */
     public void shipDestroyed ()
     {
+        // Play sound
+        playSound(bangShip);
+        
+        fireBullets = false;
+        beatTimer.stop();
+
         // Decrement lives
         lives--;
 
         // Null out the ship
         ship = null;
-        
+
         // Display a legend
         display.setLegend("Ouch!");
 
         if (lives == 0)
         {
-            
+
         }
         else
         {
-            placeShip();
+            shipSpawn.start();
         }
 
         // Since the ship was destroyed, schedule a transition
         scheduleTransition(END_DELAY);
+
     }
-    
+
     /**
      * The alien ship has been destroyed.
      */
@@ -295,8 +423,11 @@ public class Controller implements KeyListener, ActionListener
         {
             addPoints(1000);
         }
-        alien = null;        
+        alien = null;
         alienTimer.restart();
+
+        // Plays sounds when alien is destroyed
+        playSound(bangAlienShip);
     }
 
     /**
@@ -334,15 +465,37 @@ public class Controller implements KeyListener, ActionListener
     /**
      * An asteroid has been destroyed
      */
-    public void asteroidDestroyed ()
+    public void asteroidDestroyed (int astSize)
     {
         // If all the asteroids are gone, schedule a transition
         if (pstate.countAsteroids() == 0)
         {
+            beatTimer.stop();
+            alienTimer.stop();
+            beatDelay = INITIAL_BEAT;
+            if (alien != null)
+            {
+                Participant.expire(alien);
+                alien = null;
+            }
             scheduleTransition(END_DELAY);
             level++;
             display.setLegend("Next Level: " + level);
             newLevel = true;
+        }
+
+        // Plays sounds when an asteroid is destroyed
+        switch (astSize)
+        {
+            case 0:
+                playSound(bangSmall);
+                break;
+            case 1:
+                playSound(bangMedium);
+                break;
+            case 2:
+                playSound(bangLarge);
+                break;
         }
     }
 
@@ -372,11 +525,23 @@ public class Controller implements KeyListener, ActionListener
         {
             // It may be time to make a game transition
             performTransition();
-            
-            //Fire bullets when a firing key is pressed.
+
+            // Fire bullets when a firing key is pressed.
             if (fireBullets && ship != null)
             {
                 placeBullets();
+            }
+
+            // Stops small saucer sounds if alien ship is null
+            if (alien == null && smallSaucerClip != null)
+            {
+                smallSaucerClip.stop();
+            }
+
+            // Stops big saucer sounds if alien ship is null
+            if (alien == null && bigSaucerClip != null)
+            {
+                bigSaucerClip.stop();
             }
 
             // Move the participants to their new locations
@@ -387,31 +552,58 @@ public class Controller implements KeyListener, ActionListener
         }
         else if (e.getSource() == alienTimer)
         {
-            if(level == 2 && alien == null)
+            if (level == 2 && alien == null)
             {
                 placeAlien();
             }
-            if(level > 2 && alien == null)
+            if (level > 2 && alien == null)
             {
                 placeAlien();
             }
         }
         else if (e.getSource() == alienBulletTimer)
         {
-            if (alien != null)
+            if (alien != null && ship != null)
             {
-            placeAlienBullets();
+                placeAlienBullets();
             }
         }
         else if (e.getSource() == alienDirectionTimer)
         {
             if (alien != null)
             {
-            alien.changeTurnDirection(alien.alienDirection());
+                alien.changeTurnDirection(alien.alienDirection());
             }
         }
-       
-        
+        else if (e.getSource() == beatTimer)
+        {
+            if (toggleBeat)
+            {
+                playSound(beat1);
+                toggleBeat = !toggleBeat;
+                if (beatTimer.getDelay() > FASTEST_BEAT + BEAT_DELTA)
+                {
+                    beatDelay = beatDelay - BEAT_DELTA;
+                    beatTimer.setDelay(beatDelay);
+                }
+            }
+            else
+            {
+                playSound(beat2);
+                toggleBeat = !toggleBeat;
+                if (beatTimer.getDelay() > FASTEST_BEAT + BEAT_DELTA)
+                {
+                    beatDelay = beatDelay - BEAT_DELTA;
+                    beatTimer.setDelay(beatDelay);
+                }
+            }
+        }
+        else if (e.getSource() == shipSpawn)
+        {
+            placeShip();
+            shipSpawn.stop();
+        }
+
     }
 
     /**
@@ -437,9 +629,17 @@ public class Controller implements KeyListener, ActionListener
             // screen.
             if (lives <= 0)
             {
+                if (alien != null)
+                {
+                    Participant.expire(alien);
+                    alien = null;
+                }
+                alienTimer.stop();
+                beatTimer.stop();
                 finalScreen();
             }
-            if (newLevel){
+            if (newLevel)
+            {
                 clear();
                 placeShip();
                 placeAsteroids();
