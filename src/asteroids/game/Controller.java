@@ -480,7 +480,7 @@ public class Controller implements KeyListener, ActionListener
             }
             scheduleTransition(END_DELAY);
             level++;
-            display.setLegend("Next Level: " + level);
+            display.setLegend("");
             newLevel = true;
         }
 
