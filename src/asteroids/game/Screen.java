@@ -2,6 +2,8 @@ package asteroids.game;
 
 import static asteroids.game.Constants.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.util.Iterator;
 import javax.swing.*;
 
@@ -30,6 +32,7 @@ public class Screen extends JPanel
         setForeground(Color.white);
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 120));
         setFocusable(true);
+        
     }
 
     /**
@@ -62,7 +65,41 @@ public class Screen extends JPanel
         }
 
         // Draw the legend across the middle of the panel
+        
         int size = g.getFontMetrics().stringWidth(legend);
         g.drawString(legend, (SIZE - size) / 2, SIZE / 2);
+        
+        // Lives Levels Points
+        if(controller.isGameActive()) {
+            g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 36));
+            //Points
+            g.drawString(controller.numPoints() + "", SIZE / 14 , SIZE / 12);
+            
+            //Level
+            g.drawString(controller.currentLevel() + "", SIZE - SIZE / 14, SIZE / 11);
+            
+            //Lives
+            for(int x = 1;x < controller.shipLives() + 1;x++) {
+                Path2D.Double poly = new Path2D.Double();
+                poly.moveTo(21, 0);
+                poly.lineTo(-21, 12);
+                poly.lineTo(-14, 10);
+                poly.lineTo(-14, -10);
+                poly.lineTo(-21, -12);
+                poly.closePath();
+                
+                poly.transform(AffineTransform.getQuadrantRotateInstance(3));
+                poly.transform(AffineTransform.getTranslateInstance((SIZE / 34) + ((SIZE / 26) * x), SIZE / 8 ));
+                
+                g.draw(poly);
+                
+                
+            }
+            
+            
+        }
+        
+
+        
     }
 }

@@ -94,6 +94,9 @@ public class Controller implements KeyListener, ActionListener
 
     /** Stores the current beat */
     private int beatDelay;
+    
+    /** States whether game is active*/
+    private boolean activeGame = false;
 
     /**
      * Constructs a controller to coordinate the game and screen
@@ -360,6 +363,9 @@ public class Controller implements KeyListener, ActionListener
         // Reset points
         points = 0;
 
+        // game is off to begin
+        activeGame = false;
+        
         // Start listening to events (but don't listen twice)
         display.removeKeyListener(this);
         display.addKeyListener(this);
@@ -461,6 +467,14 @@ public class Controller implements KeyListener, ActionListener
     {
         return level;
     }
+    
+    /**
+     * 
+     * @return whether the game is active
+     */
+    public boolean isGameActive() {
+        return activeGame;
+    }
 
     /**
      * An asteroid has been destroyed
@@ -518,6 +532,7 @@ public class Controller implements KeyListener, ActionListener
         if (e.getSource() instanceof JButton)
         {
             initialScreen();
+            activeGame = true;
         }
 
         // Time to refresh the screen and deal with keyboard input
