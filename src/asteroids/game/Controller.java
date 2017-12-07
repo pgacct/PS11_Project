@@ -31,7 +31,7 @@ public class Controller implements KeyListener, ActionListener
     /** The alien (if one is active) or null otherwise */
     private Alien alien;
     
-    /** The missle (if one is active) or null otherwise */
+    /** The missile (if one is active) or null otherwise */
     private Missles missle;
 
     /** When this timer goes off, it is time to refresh the animation */
@@ -116,7 +116,7 @@ public class Controller implements KeyListener, ActionListener
     /** States whether game is active*/
     private boolean activeGame = false;
 
-    /** Places missles in the enhanced version */
+    /** Places missiles in the enhanced version */
     private boolean placeMissle;
 
     /** Stores if the game is in enhanced or classic mode */
@@ -127,7 +127,7 @@ public class Controller implements KeyListener, ActionListener
      */
     public Controller (boolean enhanced)
     {
-        // Sets the game to either classic of enhanced
+        // Sets the game to either classic or enhanced
         isEnhanced = enhanced;
 
         // Initialize the ParticipantState
@@ -318,15 +318,12 @@ public class Controller implements KeyListener, ActionListener
     }
 
     /**
-     * Places a heat seeking missle on the screen.
+     * Places a heat seeking missile on the screen.
      */
     private void placeMissle ()
     {
         if (pstate.countMissles() < 1)
-        {            
-            // Angle to fire directly at alien
-            //double angle = Math.atan2(alien.getY() - ship.getY(), alien.getX() - ship.getX());
-            
+        {           
             missle = new Missles(ship.getXNose(), ship.getYNose(), ship.getSpeed(), ship.getDirection(), ship.getRotation(), this);
             addParticipant(missle);
         }
@@ -767,7 +764,7 @@ public class Controller implements KeyListener, ActionListener
     }
 
     /**
-     * These events are ignored.
+     * Lets game know when an action key has been released.
      */
     @Override
     public void keyReleased (KeyEvent e)

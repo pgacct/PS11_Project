@@ -9,6 +9,9 @@ import asteroids.game.Controller;
 import asteroids.game.Participant;
 import asteroids.game.ParticipantCountdownTimer;
 
+/**
+ * Represents alien bullets
+ */
 public class AlienBullet extends Participant implements ShipDestroyer, AsteroidDestroyer
 {
     /** The game controller */
@@ -17,7 +20,9 @@ public class AlienBullet extends Participant implements ShipDestroyer, AsteroidD
     /**The shape of the bullet */
     private Shape outline;  
     
-    
+    /**
+     * Constructs alien bullets.  (double x, double y, double direction, controller) are parameters.
+     */
     public AlienBullet (double x, double y, double direction, Controller controller)
     {
         this.controller = controller;

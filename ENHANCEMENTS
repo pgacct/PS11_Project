@@ -1,2 +1,20 @@
-Put detailed information about all extra credit enhancements here.  
+Put detailed information about all extra credit enhancements here. 
+
+1.  Heat seeking missiles turn smoothly toward target and hits it (no looping)
+
+2.  Heat seeking missile initial speed, direction, rotation is identical to ship
+
+3.  Existing heat seeking missiles start following newly spawned ship
+
+4.  Cool design of heat seeking missile with flickering flame
+
+More details about the missiles:
+	-When you press the F key, a heat seeking missile is launched.
+	-Missile is only launched if an alien and a ship are present.
+	-Will turn smoothly towards alien ship, won't make a sharp turn.
+	-Will track the alien ship.  If alien is destroyed before you hit it, will remain on screen and track the new alien.
+	-Will expire after 15 seconds if it doesn't hit an alien or asteroid first.
+	-Destroys aliens and asteroids
+	-The missile is launched with the same initial speed, rotation, and direction as the ship.	
+	-The missile will immediately begin to accelerate up to the speed limit 
 

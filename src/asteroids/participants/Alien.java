@@ -11,6 +11,9 @@ import asteroids.game.Constants;
 import asteroids.game.Controller;
 import asteroids.game.Participant;
 
+/**
+ * Represents aliens
+ */
 public class Alien extends Participant implements ShipDestroyer, AsteroidDestroyer
 {
     /** The outline of the ship */
@@ -63,6 +66,10 @@ public class Alien extends Participant implements ShipDestroyer, AsteroidDestroy
         return outline;
     }
     
+    /**
+     * Chooses a random direction for the alien within specified restraints.
+     * @return
+     */
     public double alienDirection()
     {
         int directionChoice = Constants.RANDOM.nextInt(6);
