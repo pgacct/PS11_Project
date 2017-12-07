@@ -102,7 +102,7 @@ public class Alien extends Participant implements ShipDestroyer, AsteroidDestroy
     }
     
     /**
-     * Customizes the base move method by imposing friction
+     * Adjusts the direction of the alien after timer goes off.
      */
     @Override
     public void move ()

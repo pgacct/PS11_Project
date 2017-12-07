@@ -7,6 +7,9 @@ import asteroids.game.Controller;
 import asteroids.game.Participant;
 import asteroids.game.ParticipantCountdownTimer;
 
+/**
+ * Represents debris
+ */
 public class Debris extends Participant
 {
     /** The game controller */

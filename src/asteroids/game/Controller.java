@@ -14,6 +14,7 @@ import asteroids.participants.Alien;
 import asteroids.participants.AlienBullet;
 import asteroids.participants.Asteroid;
 import asteroids.participants.Bullet;
+import asteroids.participants.Missles;
 import asteroids.participants.Ship;
 
 /**
@@ -29,6 +30,9 @@ public class Controller implements KeyListener, ActionListener
 
     /** The alien (if one is active) or null otherwise */
     private Alien alien;
+    
+    /** The missle (if one is active) or null otherwise */
+    private Missles missle;
 
     /** When this timer goes off, it is time to refresh the animation */
     private Timer refreshTimer;
@@ -81,12 +85,26 @@ public class Controller implements KeyListener, ActionListener
 
     /** A Clip that, when played repeatedly, sounds like a big saucer flying */
     private Clip bigSaucerClip;
+
+    /** Clip played when alien ship is destroyed */
     private Clip bangAlienShip;
+
+    /** Clip played when a large asteroid is destroyed */
     private Clip bangLarge;
+
+    /** Clip played when medium asteroid destroyed */
     private Clip bangMedium;
+
+    /** Clip played when ship is destroyed */
     private Clip bangShip;
+
+    /** Clip played when small asteroid is destroyed */
     private Clip bangSmall;
+
+    /** Clip for beat 1 in the game */
     private Clip beat1;
+
+    /** Clip for beat 2 in the game */
     private Clip beat2;
 
     /** Toggles between beat1 and beat 2 */
@@ -95,11 +113,20 @@ public class Controller implements KeyListener, ActionListener
     /** Stores the current beat */
     private int beatDelay;
 
+    /** Places missles in the enhanced version */
+    private boolean placeMissle;
+
+    /** Stores if the game is in enhanced or classic mode */
+    private boolean isEnhanced;
+
     /**
      * Constructs a controller to coordinate the game and screen
      */
-    public Controller ()
+    public Controller (boolean enhanced)
     {
+        // Sets the game to either classic of enhanced
+        isEnhanced = enhanced;
+
         // Initialize the ParticipantState
         pstate = new ParticipantState();
 
@@ -237,12 +264,12 @@ public class Controller implements KeyListener, ActionListener
      */
     private void placeAsteroids ()
     {
-        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50,
+       /* addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50,
-                SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
+                SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this)); */
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         for (int x = 0; x < level - 1; x++)
@@ -284,6 +311,21 @@ public class Controller implements KeyListener, ActionListener
             // Add bullets
             addParticipant(
                     new AlienBullet(alien.getX(), alien.getY(), Participant.normalize(angle) + randAngleAdj, this));
+        }
+    }
+
+    /**
+     * Places a heat seeking missle on the screen.
+     */
+    private void placeMissle ()
+    {
+        if (pstate.countMissles() < 1)
+        {            
+            // Angle to fire directly at alien
+            //double angle = Math.atan2(alien.getY() - ship.getY(), alien.getX() - ship.getX());
+            
+            missle = new Missles(ship.getXNose(), ship.getYNose(), ship.getSpeed(), ship.getDirection(), this);
+            addParticipant(missle);
         }
     }
 
@@ -355,7 +397,7 @@ public class Controller implements KeyListener, ActionListener
         lives = 3;  // should be 3, changed to give more lives when testing
 
         // Reset Level
-        level = 1;  // should be 1, testing at different levels
+        level = 2;  // should be 1, testing at different levels
 
         // Reset points
         points = 0;
@@ -383,7 +425,7 @@ public class Controller implements KeyListener, ActionListener
     {
         // Play sound
         playSound(bangShip);
-        
+
         fireBullets = false;
         beatTimer.stop();
 
@@ -480,7 +522,7 @@ public class Controller implements KeyListener, ActionListener
             }
             scheduleTransition(END_DELAY);
             level++;
-            display.setLegend("");
+            display.setLegend("Next Level: " + level);
             newLevel = true;
         }
 
@@ -542,6 +584,18 @@ public class Controller implements KeyListener, ActionListener
             if (alien == null && bigSaucerClip != null)
             {
                 bigSaucerClip.stop();
+            }
+
+            // For enhanced version, places a missle if M key is pressed
+            if (placeMissle && ship != null && alien != null)
+            {
+                placeMissle();
+            }
+            
+            if (pstate.countMissles() >= 1 && alien != null && missle != null)
+            {
+                double angle = Math.atan2(alien.getY() - missle.getY(), alien.getX() - missle.getX());
+                missle.changeTurnDirection(Participant.normalize(angle));                
             }
 
             // Move the participants to their new locations
@@ -679,6 +733,12 @@ public class Controller implements KeyListener, ActionListener
                     }
                     fireBullets = true;
                     break;
+                case KeyEvent.VK_F:
+                    if (isEnhanced)
+                    {
+                        placeMissle = true;
+                    }
+                    break;
             }
         }
     }
@@ -715,6 +775,12 @@ public class Controller implements KeyListener, ActionListener
                 case KeyEvent.VK_S:
                 case KeyEvent.VK_SPACE:
                     fireBullets = false;
+                    break;
+                case KeyEvent.VK_F:
+                    if (isEnhanced)
+                    {
+                        placeMissle = false;
+                    }
                     break;
             }
         }

@@ -10,6 +10,9 @@ import asteroids.game.Controller;
 import asteroids.game.Participant;
 import asteroids.game.ParticipantCountdownTimer;
 
+/**
+ * Represents bullets
+ */
 public class Bullet extends Participant implements AsteroidDestroyer, AlienDestroyer
 {
     /** The game controller */
@@ -21,7 +24,9 @@ public class Bullet extends Participant implements AsteroidDestroyer, AlienDestr
     /** A Clip that, when played, sounds like a weapon being fired */
     private Clip bulletClip;
     
-    
+    /**
+     * Constructs bullets.  Accepts x, y, direction, and controller as parameters.
+     */
     public Bullet (double x, double y, double direction, Controller controller)
     {
         this.controller = controller;
@@ -64,8 +69,6 @@ public class Bullet extends Participant implements AsteroidDestroyer, AlienDestr
             // Expire the bullet from the game
             Participant.expire(this);
 
-            // Tell the controller the bullet was destroyed
-            //controller.bulletDestroyed();
         }        
     }
     
