@@ -267,12 +267,12 @@ public class Controller implements KeyListener, ActionListener
      */
     private void placeAsteroids ()
     {
-       addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50,
+        addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, EDGE_OFFSET + RANDOM.nextInt(100) - 50,
-                SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
+                SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this)); 
         addParticipant(new Asteroid(RANDOM.nextInt(4), 2, SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50,
                 SIZE - EDGE_OFFSET + RANDOM.nextInt(100) - 50, 3, this));
         for (int x = 0; x < level - 1; x++)
