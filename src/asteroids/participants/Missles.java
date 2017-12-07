@@ -4,7 +4,6 @@ import java.awt.Shape;
 import java.awt.geom.Path2D;
 import asteroids.destroyers.AlienDestroyer;
 import asteroids.destroyers.AsteroidDestroyer;
-import asteroids.game.Constants;
 import asteroids.game.Controller;
 import asteroids.game.Participant;
 import asteroids.game.ParticipantCountdownTimer;
