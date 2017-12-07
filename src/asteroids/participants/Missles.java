@@ -26,13 +26,13 @@ public class Missles extends Participant implements AlienDestroyer, AsteroidDest
     /**
      * Constructs heat seeking missles.  (double x, double y, double direction, controller) parameters.
      */
-    public Missles (double x, double y, double speed, double direction, Controller controller)
+    public Missles (double x, double y, double speed, double direction, double rotation, Controller controller)
     {
         this.controller = controller;
         missleDir = direction;
         setPosition(x, y); 
         setSpeed(speed);  
-        setRotation(direction);
+        setRotation(rotation);
         setDirection(direction); 
         
      // This will contain the outline
@@ -57,7 +57,7 @@ public class Missles extends Participant implements AlienDestroyer, AsteroidDest
     }
     
     /**
-     * This method is called when the alien timer completes its countdown.  Changes ship direction.
+     * Changes missle direction.
      */
     public void changeTurnDirection (double turn)
     {
