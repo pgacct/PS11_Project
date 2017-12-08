@@ -16,5 +16,6 @@ More details about the missiles:
 	-Will expire after 15 seconds if it doesn't hit an alien or asteroid first.
 	-Destroys aliens and asteroids
 	-The missile is launched with the same initial speed, rotation, and direction as the ship.	
-	-The missile will immediately begin to accelerate up to the speed limit 
+	-The missile will immediately begin to accelerate up to the speed limit. 
+	-There can only be one missile at a time.
 

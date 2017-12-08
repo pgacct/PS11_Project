@@ -94,17 +94,17 @@ public class Missles extends Participant implements AlienDestroyer, AsteroidDest
     public void changeTurnDirection (double turn)
     {
 
-        if (turn - (getRotation()) > 3 * Math.PI / 180)
+        if (turn - (getRotation()) > 5 * Math.PI / 180)
         {
-            rotate(3 * Math.PI / 180);
+            rotate(5 * Math.PI / 180);
         }
-        else if (turn - (getRotation()) < -3 * Math.PI / 180)
+        else if (turn - (getRotation()) < -5 * Math.PI / 180)
         {
-            rotate(-3 * Math.PI / 180);
+            rotate(-5 * Math.PI / 180);
         }
         else
         {
- 
+            rotate(turn - getRotation());
         }
     }
 
